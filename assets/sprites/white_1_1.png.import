@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nwatvx361y35"
-path="res://.godot/imported/black3bent3.png-960c05e27ad9bc9a17a9865782c265e0.ctex"
+uid="uid://b5k0jq0rrypvn"
+path="res://.godot/imported/white_1_1.png-845c60ec8db55299641cd0b6d490baf5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/black3bent3.png"
-dest_files=["res://.godot/imported/black3bent3.png-960c05e27ad9bc9a17a9865782c265e0.ctex"]
+source_file="res://assets/sprites/white_1_1.png"
+dest_files=["res://.godot/imported/white_1_1.png-845c60ec8db55299641cd0b6d490baf5.ctex"]
 
 [params]
 

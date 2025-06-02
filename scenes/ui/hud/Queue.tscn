@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cnmcxlshcvhn2"]
 
-[ext_resource type="Script" uid="uid://1i0nxrbepdnm" path="res://scenes/ui/hud/stone_previews.gd" id="1_muip2"]
+[ext_resource type="Script" uid="uid://1i0nxrbepdnm" path="res://scenes/ui/hud/queue.gd" id="1_muip2"]
 
 [node name="StonePreviews" type="Node2D"]
 script = ExtResource("1_muip2")
