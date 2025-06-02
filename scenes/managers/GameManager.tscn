@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmdowttuln32m"]
+
+[ext_resource type="Script" uid="uid://udt0u0p457kp" path="res://scenes/managers/game_manager.gd" id="1_8jiv4"]
+[ext_resource type="Texture2D" uid="uid://e1jdwv3wgfe" path="res://assets/backgrounds/bg-wood@2x.png" id="2_3ghtp"]
+
+[node name="GameManager" type="Node2D"]
+script = ExtResource("1_8jiv4")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_3ghtp")
+stretch_mode = 2

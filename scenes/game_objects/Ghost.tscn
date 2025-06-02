@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsladcoy120rm"]
+
+[ext_resource type="Script" uid="uid://bt20w2oek7ys4" path="res://scenes/game_objects/ghost.gd" id="1_5lvbu"]
+
+[node name="Ghost" type="Node2D"]
+script = ExtResource("1_5lvbu")

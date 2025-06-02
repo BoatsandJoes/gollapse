@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bk160l7b4kv6t"]
+
+[ext_resource type="Script" uid="uid://b7wl4u3xeix7a" path="res://scenes/ui/menus/button_list.gd" id="1_1my8h"]
+
+[node name="ButtonList" type="VBoxContainer"]
+script = ExtResource("1_1my8h")
