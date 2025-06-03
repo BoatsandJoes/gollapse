@@ -1,6 +1,7 @@
 extends Node2D
 class_name GameManager
 
+var rando: Randomizer = Randomizer.new()
 var textures: Array[Array]
 var shapes: Array[Array]
 var numColors: int = 2
@@ -20,6 +21,7 @@ var numPlayers: int = 1
 var numHumanPlayers: int = 1
 
 func _ready() -> void:
+	rando.init()
 	for i in range(numBoards):
 		var board = Board.instantiate()
 		board.init(width, height, cellPixels)
@@ -29,15 +31,26 @@ func _ready() -> void:
 	for i in range(numPlayers):
 		ghosts.append(Ghost.instantiate())
 		if numBoards == numPlayers:
-			ghosts[i].point = Vector2i((width + 1) / 2, (height / 2))
+			ghosts[i].point = Vector2i(width / 2, height / 2)
 		update_ghost_visual_position(i)
-		add_child(ghosts[i])
 		queues.append(Queue.instantiate())
 		if numBoards == numPlayers:
-			queues[i].position = boards[i].position + Vector2((cellPixels) * (width + 1), cellPixels)
+			queues[i].position = boards[i].position + Vector2((cellPixels) * (width), cellPixels / 2)
 		add_child(queues[i])
+		add_child(ghosts[i])
+		for j in range(queues[i].queueSize + 1):
+			if j == queues[i].queueSize:
+				#array of dicts of color, shape, orientation, rootOffset
+				var items: Array[Dictionary] = []
+				for k in range(queues[i].queue[0].size()):
+					var stone = queues[i].queue[0][k]
+					if stone.visible:
+						items.append({&"color": stone.color, &"shape": stone.shape,
+						&"orientation": stone.orientation, &"rootOffset": queues[i].offsetPoints[0][k]})
+				ghosts[i].set_stones(items, shapes, textures)
+			queues[i].advance_queue(rando.get_piece(queues[i].piecesLoaded), shapes, textures)
 
 func update_ghost_visual_position(ghostIndex: int):
 	if numBoards == numPlayers:
-		ghosts[ghostIndex].position = boards[ghostIndex].position
-		+ Vector2(ghosts[ghostIndex].point * cellPixels)
+		ghosts[ghostIndex].position = (boards[ghostIndex].position
+		+ Vector2(ghosts[ghostIndex].point * cellPixels))

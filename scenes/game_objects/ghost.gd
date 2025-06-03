@@ -12,6 +12,7 @@ func _ready() -> void:
 		stone.set_modulate(Color(1,1,1,0.5))
 		stones.append(stone)
 		add_child(stone)
+		offsetPoints.append(Vector2i(0,0))
 
 #items: color, shape, orientation, rootOffset
 func set_stones(items: Array[Dictionary], shapes: Array[Array], textures: Array[Array]):
