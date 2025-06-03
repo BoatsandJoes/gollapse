@@ -4,14 +4,22 @@ class_name Board
 var height: int
 var width: int
 var cellPixels: int
-var Stone = preload("res://scenes/game_objects/Stone.tscn")
-var stonesOnBoard: Array[Stone]
-var board: Array
+var stonesOnBoard: Array[Stone] = []
+var board: Array = []
 
 func _ready() -> void:
-	stonesOnBoard = []
-	board = []
+	pass
+
+func init(width, height, cellPixels):
+	self.width = width
+	self.height = height
+	self.cellPixels = cellPixels
 	board.resize(width * height)
+
+func place(stone: Stone):
+	stonesOnBoard.append(stone)
+	add_child(stone)
+	#todo board array?
 
 func _draw() -> void:
 	for col in range(width):

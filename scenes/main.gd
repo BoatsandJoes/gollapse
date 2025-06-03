@@ -1,41 +1,41 @@
 extends Node2D
 class_name Main
 
-const shapes: Array[Array] = [[{&"spriteOffset": Vector2i(0,0), &"occupies": [Vector2i(0,0)],
+const shapes: Array[Array] = [[{&"spriteOffset": Vector2(0,0), &"occupies": [Vector2i(0,0)],
 &"liberties": [Vector2i(0,-1), Vector2i(-1,0), Vector2i(1,0), Vector2i(0,1)], &"pointsBelow": [Vector2i(0,1)]}],
-[{&"spriteOffset": Vector2i(16,0), &"occupies": [Vector2i(0,0), Vector2i(1,0)],
+[{&"spriteOffset": Vector2(16,0), &"occupies": [Vector2i(0,0), Vector2i(1,0)],
 &"liberties": [Vector2i(0,-1), Vector2i(1,-1), Vector2i(-1,0), Vector2i(2,0), Vector2i(0,1), Vector2i(1,1)],
 &"pointsBelow": [Vector2i(0,1), Vector2i(1,1)]},
-{&"spriteOffset": Vector2i(0,16), &"occupies": [Vector2i(0,0), Vector2i(0,1)],
+{&"spriteOffset": Vector2(0,16), &"occupies": [Vector2i(0,0), Vector2i(0,1)],
 &"liberties": [Vector2i(0,-1), Vector2i(-1,0), Vector2i(1,0), Vector2i(-1,1), Vector2i(1,1), Vector2i(0,2)],
 &"pointsBelow": [Vector2i(0,2)]},
-{&"spriteOffset": Vector2i(-16,0), &"occupies": [Vector2i(-1,0), Vector2i(0,0)],
+{&"spriteOffset": Vector2(-16,0), &"occupies": [Vector2i(-1,0), Vector2i(0,0)],
 &"liberties": [Vector2i(-1,-1), Vector2i(0,-1), Vector2i(-2,0), Vector2i(1,0), Vector2i(-1,1), Vector2i(0,1)],
 &"pointsBelow": [Vector2i(-1,1), Vector2i(0,1)]},
-{&"spriteOffset": Vector2i(0,-16), &"occupies": [Vector2i(0,-1), Vector2i(0,0)],
+{&"spriteOffset": Vector2(0,-16), &"occupies": [Vector2i(0,-1), Vector2i(0,0)],
 &"liberties": [Vector2i(0,-2), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,0), Vector2i(1,0), Vector2i(0,1)],
 &"pointsBelow": [Vector2i(0,1)]}],
-[{&"spriteOffset": Vector2i(0,0), &"occupies": [Vector2i(-1,0), Vector2i(0,0), Vector2i(1,0)],
+[{&"spriteOffset": Vector2(0,0), &"occupies": [Vector2i(-1,0), Vector2i(0,0), Vector2i(1,0)],
 &"liberties": [Vector2i(-1,-1), Vector2i(0,-1), Vector2i(1,-1), Vector2i(-2,0), Vector2i(2,0),
 Vector2i(-1,1), Vector2i(0,1), Vector2i(1,1)],
 &"pointsBelow": [Vector2i(-1,1), Vector2i(0,1), Vector2i(1,1)]},
-{&"spriteOffset": Vector2i(0,0), &"occupies": [Vector2i(0,-1), Vector2i(0,0), Vector2i(0,1)],
+{&"spriteOffset": Vector2(0,0), &"occupies": [Vector2i(0,-1), Vector2i(0,0), Vector2i(0,1)],
 &"liberties": [Vector2i(0,-2), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,0), Vector2i(1,0),
 Vector2i(-1,1), Vector2i(1,1), Vector2i(0,2)],
 &"pointsBelow": [Vector2i(0,2)]}],
-[{&"spriteOffset": Vector2i(16,16), &"occupies": [Vector2i(0,0), Vector2i(1,0), Vector2i(0,1)],
+[{&"spriteOffset": Vector2(16,16), &"occupies": [Vector2i(0,0), Vector2i(1,0), Vector2i(0,1)],
 &"liberties": [Vector2i(0,-1), Vector2i(1,-1), Vector2i(-1,0), Vector2i(2,0),
 Vector2i(-1,1), Vector2i(1,1), Vector2i(0,2)],
 &"pointsBelow": [Vector2i(1,1), Vector2i(0,2)]},
-{&"spriteOffset": Vector2i(-16,16), &"occupies": [Vector2i(-1,0), Vector2i(0,0), Vector2i(0,1)],
+{&"spriteOffset": Vector2(-16,16), &"occupies": [Vector2i(-1,0), Vector2i(0,0), Vector2i(0,1)],
 &"liberties": [Vector2i(-1,-1), Vector2i(0,-1), Vector2i(-2,0), Vector2i(1,0),
 Vector2i(-1,1), Vector2i(1,1), Vector2i(0,2)],
 &"pointsBelow": [Vector2i(-1,1), Vector2i(0,2)]},
-{&"spriteOffset": Vector2i(-16,-16), &"occupies": [Vector2i(0,-1), Vector2i(-1,0), Vector2i(0,0)],
+{&"spriteOffset": Vector2(-16,-16), &"occupies": [Vector2i(0,-1), Vector2i(-1,0), Vector2i(0,0)],
 &"liberties": [Vector2i(0,-2), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-2,0),
 Vector2i(1,0), Vector2i(-1,1), Vector2i(0,1)],
 &"pointsBelow": [Vector2i(-1,1), Vector2i(0,1)]},
-{&"spriteOffset": Vector2i(16,-16), &"occupies": [Vector2i(0,-1), Vector2i(0,0), Vector2i(1,0)],
+{&"spriteOffset": Vector2(16,-16), &"occupies": [Vector2i(0,-1), Vector2i(0,0), Vector2i(1,0)],
 &"liberties": [Vector2i(0,-2), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,0),
 Vector2i(2,0), Vector2i(0,1), Vector2i(1,1)],
 &"pointsBelow": [Vector2i(0,1), Vector2i(1,1)]}
@@ -52,8 +52,10 @@ func _ready() -> void:
 		for j in range(shapes.size()):
 			textures[i].append([])
 			for k in range(shapes[i].size()):
-				textures[i][j].append(load("res://assets/sprites/"
-				+ colors[i] + "_" + str(j) + "_" + str(k) + ".png"))
+				var path: String = ("res://assets/sprites/"
+				+ colors[i] + "_" + str(j) + "_" + str(k) + ".png")
+				if ResourceLoader.exists(path):
+					textures[i][j].append(load(path))
 	go_to_game()
 
 func remove_scene():
