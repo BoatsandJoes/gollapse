@@ -40,7 +40,7 @@ Vector2i(1,0), Vector2i(-1,1), Vector2i(0,1)],
 Vector2i(2,0), Vector2i(0,1), Vector2i(1,1)],
 &"pointsBelow": [Vector2i(0,1), Vector2i(1,1)]}
 ]]
-const colors: Array[StringName] = [&"white", &"black"]
+const colors: Array[StringName] = [&"black", &"white"]
 var textures: Array[Array] = []
 var MainMenu = preload("res://scenes/ui/menus/MainMenu.tscn")
 var GameManager = preload("res://scenes/managers/GameManager.tscn")

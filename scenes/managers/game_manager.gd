@@ -21,7 +21,7 @@ var numPlayers: int = 1
 var numHumanPlayers: int = 1
 
 func _ready() -> void:
-	rando.init()
+	rando.init(numColors)
 	for i in range(numBoards):
 		var board = Board.instantiate()
 		board.init(width, height, cellPixels)
