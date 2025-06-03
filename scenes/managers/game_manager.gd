@@ -9,11 +9,13 @@ var cellPixels: int = 32
 var width: int = 9
 var height: int = 11
 var Board = preload("res://scenes/game_objects/Board.tscn")
-var boards: Array[Board]
+var boards: Array[Board] = []
+var Controller = preload("res://scenes/managers/Controller.tscn")
+var controllers: Array[Controller] = []
 var Ghost = preload("res://scenes/game_objects/Ghost.tscn")
-var ghosts: Array[Ghost]
+var ghosts: Array[Ghost] = []
 var Queue = preload("res://scenes/ui/hud/Queue.tscn")
-var queues: Array[Queue]
+var queues: Array[Queue] = []
 var Hud = preload("res://scenes/ui/hud/Hud.tscn")
 var hud: Hud
 var numBoards: int = 1
@@ -29,6 +31,8 @@ func _ready() -> void:
 		add_child(board)
 		boards.append(board)
 	for i in range(numPlayers):
+		controllers.append(Controller.instantiate())
+		add_child(controllers[i])
 		ghosts.append(Ghost.instantiate())
 		if numBoards == numPlayers:
 			ghosts[i].point = Vector2i(width / 2, height / 2)
@@ -54,3 +58,13 @@ func update_ghost_visual_position(ghostIndex: int):
 	if numBoards == numPlayers:
 		ghosts[ghostIndex].position = (boards[ghostIndex].position
 		+ Vector2(ghosts[ghostIndex].point * cellPixels))
+
+func _physics_process(delta: float) -> void:
+	var controllersToProcess: Array[Controller] = []
+	for i in range(controllers.size()):
+		var controller = controllers[i]
+		controller.poll_input(delta)
+		#randomize processing order to make it fair
+		controllersToProcess.insert(randi_range(0, controllersToProcess.size()), controller)
+	for controller in controllersToProcess:
+		pass #todo
