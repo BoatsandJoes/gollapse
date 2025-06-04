@@ -16,6 +16,9 @@ func _ready() -> void:
 		add_child(stone)
 		offsetPoints.append(Vector2i(0,0))
 
+func can_place(stonesOnBoard: Array[Stone]) -> bool:
+	return true
+
 func move(direction: Vector2i, shapes: Array[Array]):
 	#this assumes direction.x and direction.y are no more than +- 1
 	var stoneIndex: int = 0

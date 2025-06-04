@@ -16,10 +16,17 @@ func init(width, height, cellPixels):
 	self.cellPixels = cellPixels
 	board.resize(width * height)
 
+func place_all(stones: Array[Stone]):
+	for stone in stones:
+		place(stone)
+
 func place(stone: Stone):
 	stonesOnBoard.append(stone)
+	stone.position = get_position_for(stone.rootPoint)
 	add_child(stone)
-	#todo board array?
+
+func get_position_for(point: Vector2i) -> Vector2:
+	return point * cellPixels
 
 func _draw() -> void:
 	for col in range(width):

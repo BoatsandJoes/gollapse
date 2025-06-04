@@ -18,6 +18,7 @@ var Queue = preload("res://scenes/ui/hud/Queue.tscn")
 var queues: Array[Queue] = []
 var Hud = preload("res://scenes/ui/hud/Hud.tscn")
 var hud: Hud
+var Stone = preload("res://scenes/game_objects/Stone.tscn")
 var numBoards: int = 1
 var numPlayers: int = 1
 var numHumanPlayers: int = 1
@@ -46,15 +47,18 @@ func _ready() -> void:
 		add_child(ghosts[i])
 		for j in range(queues[i].queueSize + 1):
 			if j == queues[i].queueSize:
-				#array of dicts of color, shape, orientation, rootOffset
-				var items: Array[Dictionary] = []
-				for k in range(queues[i].queue[0].size()):
-					var stone = queues[i].queue[0][k]
-					if stone.visible:
-						items.append({&"color": stone.color, &"shape": stone.shape,
-						&"orientation": stone.orientation, &"rootOffset": queues[i].offsetPoints[0][k]})
-				ghosts[i].set_stones(items, shapes, textures)
+				populate_ghost_from_queue(queues[i], ghosts[i])
 			queues[i].advance_queue(rando.get_piece(queues[i].piecesLoaded), shapes, textures)
+
+func populate_ghost_from_queue(queue: Queue, ghost: Ghost):
+	#array of dicts of color, shape, orientation, rootOffset
+	var items: Array[Dictionary] = []
+	for i in range(queue.queue[0].size()):
+		var stone = queue.queue[0][i]
+		if stone.visible:
+			items.append({&"color": stone.color, &"shape": stone.shape,
+			&"orientation": stone.orientation, &"rootOffset": queue.offsetPoints[0][i]})
+	ghost.set_stones(items, shapes, textures)
 
 func update_ghost_visual_position(ghostIndex: int):
 	if numBoards == numPlayers:
@@ -73,12 +77,24 @@ func _physics_process(delta: float) -> void:
 		var controller: Controller = controllerDict[&"controller"]
 		var playerNum: int = controllerDict[&"playerNum"]
 		var ghost = ghosts[playerNum]
+		var board = boards[playerNum]
+		var queue = queues[playerNum]
 		var moved: bool = false
 		if controller.pause:
 			pass #todo
 		if controller.place:
-			#todo
-			moved = true
+			if ghost.can_place(board.stonesOnBoard):
+				var stones: Array[Stone] = []
+				for stone in ghost.stones:
+					if stone.visible:
+						stones.append(Stone.instantiate())
+						stones[stones.size() - 1].init(stone.color,stone.shape,stone.orientation,
+						shapes,textures)
+						stones[stones.size() - 1].rootPoint = stone.rootPoint
+				board.place_all(stones)
+				populate_ghost_from_queue(queue, ghost)
+				queue.advance_queue(rando.get_piece(queue.piecesLoaded), shapes, textures)
+				moved = true
 		if controller.cw:
 			#todo
 			moved = true
