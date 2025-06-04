@@ -16,7 +16,14 @@ func _ready() -> void:
 		add_child(stone)
 		offsetPoints.append(Vector2i(0,0))
 
-func can_place(stonesOnBoard: Array[Stone]) -> bool:
+func can_place(stonesOnBoard: Array[Stone], shapes) -> bool:
+	for stone in stones:
+		if stone.visible:
+			for boardStone in stonesOnBoard:
+				for boardPoint in shapes[boardStone.shape][boardStone.orientation][&"occupies"]:
+					for myPoint in shapes[stone.shape][stone.orientation][&"occupies"]:
+						if boardPoint + boardStone.rootPoint == myPoint + stone.rootPoint:
+							return false
 	return true
 
 func move(direction: Vector2i, shapes: Array[Array]):

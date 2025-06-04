@@ -83,7 +83,7 @@ func _physics_process(delta: float) -> void:
 		if controller.pause:
 			pass #todo
 		if controller.place:
-			if ghost.can_place(board.stonesOnBoard):
+			if ghost.can_place(board.stonesOnBoard, shapes):
 				var stones: Array[Stone] = []
 				for stone in ghost.stones:
 					if stone.visible:
