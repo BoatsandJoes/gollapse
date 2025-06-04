@@ -27,7 +27,7 @@ func _ready() -> void:
 	rando.init(numColors)
 	for i in range(numBoards):
 		var board = Board.instantiate()
-		board.init(width, height, cellPixels)
+		board.init(width, height, cellPixels, shapes)
 		board.position = Vector2(cellPixels, 360 - cellPixels / 2 - cellPixels * (height - 1))
 		add_child(board)
 		boards.append(board)

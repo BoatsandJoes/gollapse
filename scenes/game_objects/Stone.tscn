@@ -1,8 +1,50 @@
-[gd_scene load_steps=2 format=3 uid="uid://1kllekdoxwj3"]
+[gd_scene load_steps=5 format=3 uid="uid://1kllekdoxwj3"]
 
 [ext_resource type="Script" uid="uid://da1fpgg3h0yo7" path="res://scenes/game_objects/stone.gd" id="1_b2o1m"]
+
+[sub_resource type="Animation" id="Animation_b2o1m"]
+resource_name = "clear"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(4, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1e-05, 1e-05)]
+}
+
+[sub_resource type="Animation" id="Animation_vaw7u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_adnwl"]
+_data = {
+&"RESET": SubResource("Animation_vaw7u"),
+&"clear": SubResource("Animation_b2o1m")
+}
 
 [node name="Stone" type="Node2D"]
 script = ExtResource("1_b2o1m")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_adnwl")
+}
