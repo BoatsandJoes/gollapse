@@ -13,6 +13,9 @@ func _ready() -> void:
 func init(color: int, shape: int, orientation: int, shapes: Array[Array], textures: Array[Array]):
 	self.color = color
 	self.shape = shape
+	spin(orientation, shapes, textures)
+
+func spin(orientation: int, shapes: Array[Array], textures: Array[Array]) -> void:
 	self.orientation = orientation
 	$Sprite2D.position = shapes[shape][orientation][&"spriteOffset"]
 	$Sprite2D.texture = textures[color][shape][orientation % textures[color][shape].size()]

@@ -51,7 +51,7 @@ func _ready() -> void:
 		textures.append([])
 		for j in range(shapes.size()):
 			textures[i].append([])
-			for k in range(shapes[i].size()):
+			for k in range(shapes[j].size()):
 				var path: String = ("res://assets/sprites/"
 				+ colors[i] + "_" + str(j) + "_" + str(k) + ".png")
 				if ResourceLoader.exists(path):

@@ -17,14 +17,32 @@ func _ready() -> void:
 		offsetPoints.append(Vector2i(0,0))
 
 func can_place(stonesOnBoard: Array[Stone], shapes) -> bool:
-	for stone in stones:
+	for i in range(stones.size()):
+		var stone = stones[i]
 		if stone.visible:
 			for boardStone in stonesOnBoard:
 				for boardPoint in shapes[boardStone.shape][boardStone.orientation][&"occupies"]:
 					for myPoint in shapes[stone.shape][stone.orientation][&"occupies"]:
+						#offsetPoints are baked into the root point already
 						if boardPoint + boardStone.rootPoint == myPoint + stone.rootPoint:
 							return false
 	return true
+
+func spin(clockwise: bool, shapes: Array[Array], textures: Array[Array]) -> void:
+	var direction: int = 1 if clockwise else -1
+	for i in range(stones.size()):
+		var stone = stones[i]
+		if stone.visible:
+			var newOrientation = stone.orientation + direction
+			if newOrientation < 0:
+				newOrientation = 3
+			newOrientation = newOrientation % shapes[stone.shape].size()
+			stone.spin(newOrientation, shapes, textures)
+			#rotate the offset by multiplying the vectors.
+			if direction == -1:
+				update_offset(i, Vector2i(-offsetPoints[i].y, offsetPoints[i].x))
+			else:
+				update_offset(i, Vector2i(offsetPoints[i].y, -offsetPoints[i].x))
 
 func move(direction: Vector2i, shapes: Array[Array]):
 	#this assumes direction.x and direction.y are no more than +- 1
@@ -49,6 +67,11 @@ func move(direction: Vector2i, shapes: Array[Array]):
 		for stone in stones:
 			stone.move(direction)
 
+func update_offset(i: int, offset: Vector2i) -> void:
+	offsetPoints[i] = offset
+	stones[i].rootPoint = point + offset
+	stones[i].position = offset * 32 #32 is the cell size
+
 #items: color, shape, orientation, rootOffset
 func set_stones(items: Array[Dictionary], shapes: Array[Array], textures: Array[Array]):
 	var kick: Vector2i = Vector2i(0,0)
@@ -58,9 +81,7 @@ func set_stones(items: Array[Dictionary], shapes: Array[Array], textures: Array[
 			var stone = stones[i]
 			stone.visible = true
 			stone.init(item[&"color"], item[&"shape"], item[&"orientation"], shapes, textures)
-			offsetPoints[i] = item[&"rootOffset"]
-			stone.rootPoint = point + offsetPoints[i]
-			stone.position = offsetPoints[i] * 32 #32 is the cell size
+			update_offset(i, item[&"rootOffset"])
 			# check for kicks
 			for intersection in shapes[stone.shape][stone.orientation][&"occupies"]:
 				intersection = intersection + stone.rootPoint

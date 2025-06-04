@@ -96,10 +96,10 @@ func _physics_process(delta: float) -> void:
 				queue.advance_queue(rando.get_piece(queue.piecesLoaded), shapes, textures)
 				moved = true
 		if controller.cw:
-			#todo
+			ghost.spin(true, shapes, textures)
 			moved = true
 		elif controller.ccw:
-			#todo
+			ghost.spin(false, shapes, textures)
 			moved = true
 		var move: Vector2i = Vector2i(0,0)
 		if (controller.direction.x != 0 && (controller.horizontalHeldFor == 0.0
