@@ -1,6 +1,7 @@
 extends Node2D
 class_name Main
 
+# 1, 2, straight 3, bent 3. In numpad notation, orientations go 6, 2, 4, 8 / 3, 1, 7, 9.
 const shapes: Array[Array] = [[{&"spriteOffset": Vector2(0,0), &"occupies": [Vector2i(0,0)],
 &"liberties": [Vector2i(0,-1), Vector2i(-1,0), Vector2i(1,0), Vector2i(0,1)], &"pointsBelow": [Vector2i(0,1)]}],
 [{&"spriteOffset": Vector2(16,0), &"occupies": [Vector2i(0,0), Vector2i(1,0)],

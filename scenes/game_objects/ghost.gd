@@ -32,6 +32,7 @@ func spin(clockwise: bool, shapes: Array[Array], textures: Array[Array]) -> void
 	var direction: int = 1 if clockwise else -1
 	for i in range(stones.size()):
 		var stone = stones[i]
+		var kick: Vector2i = Vector2i(0,0)
 		if stone.visible:
 			var newOrientation = stone.orientation + direction
 			if newOrientation < 0:
@@ -39,10 +40,13 @@ func spin(clockwise: bool, shapes: Array[Array], textures: Array[Array]) -> void
 			newOrientation = newOrientation % shapes[stone.shape].size()
 			stone.spin(newOrientation, shapes, textures)
 			#rotate the offset by multiplying the vectors.
-			if direction == -1:
+			if direction == 1:
 				update_offset(i, Vector2i(-offsetPoints[i].y, offsetPoints[i].x))
 			else:
 				update_offset(i, Vector2i(offsetPoints[i].y, -offsetPoints[i].x))
+			kick = check_for_kicks(kick, stone, shapes)
+		if kick != Vector2i(0,0):
+			move(kick, shapes) #this assumes the piece is no more than 1 in the wall.
 
 func move(direction: Vector2i, shapes: Array[Array]):
 	#this assumes direction.x and direction.y are no more than +- 1
@@ -82,18 +86,21 @@ func set_stones(items: Array[Dictionary], shapes: Array[Array], textures: Array[
 			stone.visible = true
 			stone.init(item[&"color"], item[&"shape"], item[&"orientation"], shapes, textures)
 			update_offset(i, item[&"rootOffset"])
-			# check for kicks
-			for intersection in shapes[stone.shape][stone.orientation][&"occupies"]:
-				intersection = intersection + stone.rootPoint
-				if intersection.x < 0:
-					kick.x = 1
-				elif intersection.x >= width:
-					kick.x = -1
-				if intersection.y < 0:
-					kick.y = 1
-				elif intersection.y >= height:
-					kick.y = -1
+			kick = check_for_kicks(kick, stone, shapes)
 		else:
 			stones[i].visible = false
 	if kick != Vector2i(0,0):
 		move(kick, shapes) # This will fail if it's possible to get stuck 2 cells deep in the wall
+
+func check_for_kicks(kick: Vector2i, stone: Stone, shapes: Array[Array]) -> Vector2i:
+	for intersection in shapes[stone.shape][stone.orientation][&"occupies"]:
+		intersection = intersection + stone.rootPoint
+		if intersection.x < 0:
+			kick.x = 1
+		elif intersection.x >= width:
+			kick.x = -1
+		if intersection.y < 0:
+			kick.y = 1
+		elif intersection.y >= height:
+			kick.y = -1
+	return kick
