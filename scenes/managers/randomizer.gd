@@ -13,24 +13,18 @@ const groups: Array[Array] = [
 	[[{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)},
 		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}]],
 	#T
-	[[{&"shape": 2, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(0,1)}],
-	[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
+	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
 		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
 	[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(0,0)},
 		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}]],
 	#L
 	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(-1,0)},
 		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}],
-	[{&"shape": 2, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,1)}],
 	[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(0,0)},
 		{&"shape": 1, &"orientation": 1, &"offset": Vector2i(-1,0)}]],
 	#J
 	[[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(1,0)},
 		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
-	[{&"shape": 2, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,1)}],
 	[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(-1,0)},
 		{&"shape": 1, &"orientation": 1, &"offset": Vector2i(1,0)}]],
 	#S
