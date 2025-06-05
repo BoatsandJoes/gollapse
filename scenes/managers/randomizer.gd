@@ -1,8 +1,8 @@
 extends Node
 class_name Randomizer
 const groups: Array[Array] = [
-	# 1
-	[[{&"shape": 0, &"orientation": 0, &"offset": Vector2i(0,0)}]],
+	# 1 (randomizer deals these out at a fixed rate)
+	# [[{&"shape": 0, &"orientation": 0, &"offset": Vector2i(0,0)}]],
 	# 2
 	[[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(0,0)}]],
 	# straight 3
@@ -40,10 +40,14 @@ const groups: Array[Array] = [
 var pieces: Array[Array] # array of array of dicts of color, shape, orientation, rootOffset
 
 func init(colors: int):
+	const piecesPerSingle: int = 11 #11 matches their "natural frequency"
 	for i in range(1000):
 		var group: Array[Dictionary] = []
 		var choice = groups[randi_range(0, groups.size() - 1)]
 		choice = choice[randi_range(0, choice.size() - 1)]
+		if i != 0 && i % piecesPerSingle == 0:
+			# Deal a single.
+			choice = [{&"shape": 0, &"orientation": 0, &"offset": Vector2i(0,0)}]
 		for spec in choice:
 			group.append({&"color": i % colors, &"shape": spec[&"shape"], &"orientation": spec[&"orientation"],
 		&"rootOffset": spec[&"offset"]})
