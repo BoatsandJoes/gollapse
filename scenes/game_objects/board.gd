@@ -29,6 +29,7 @@ func place(stone: Stone):
 	stonesOnBoard.append(stone)
 	stone.position = get_position_for(stone.rootPoint)
 	stone.clear.connect(_on_stone_clear)
+	stone.land.connect(_on_stone_land)
 	add_child(stone)
 	flagForClearCheck = true
 	# This stone's color will be cleared last (ie will capture before it is captured)
@@ -38,8 +39,12 @@ func place(stone: Stone):
 func _on_stone_clear(stone: Stone):
 	stonesOnBoard.erase(stone)
 	stone.clear.disconnect(_on_stone_clear)
+	stone.land.disconnect(_on_stone_land)
 	remove_child(stone)
 	stone.queue_free()
+
+func _on_stone_land(_stone: Stone):
+	flagForClearCheck = true
 
 func get_position_for(point: Vector2i) -> Vector2:
 	return point * cellPixels
@@ -111,13 +116,62 @@ func return_surrounded_group_containing(stone: Stone) -> Array[Stone]:
 		clearing.append(stone)
 	return clearing
 
-func apply_gravity() -> void:
-	#todo
+func apply_gravity(delta: float) -> void:
 	checkedStones = []
+	for stone in stonesOnBoard:
+		if !stone.clearing && !checkedStones.has(stone):
+			fall(stone, delta)
+
+func fall(stone: Stone, delta: float) -> float:
+	#This method assumes that there is no C stone that can wrap around and be above + below at the same time.
+	checkedStones.append(stone)
+	var highestFloor: float = stone.fallThreshold * 2 #this is a lower bound
+	var hardFloor: bool = false
+	for genericPoint in shapes[stone.shape][stone.orientation][&"pointsBelow"]:
+		var point = genericPoint + stone.rootPoint
+		if point.y >= height:
+			hardFloor = true
+			highestFloor = min(highestFloor, stone.fallThreshold / 2.0)
+		else:
+			# Check to see if there's a stone below
+			for otherStone in stonesOnBoard:
+				var doneLookingAtStonesForThisLiberty: bool = false
+				for genericOtherPoint in shapes[otherStone.shape][otherStone.orientation][&"occupies"]:
+					var otherPoint: Vector2i = genericOtherPoint + otherStone.rootPoint
+					if otherPoint == point:
+						if !checkedStones.has(otherStone):
+							#the stone below hasn't fallen yet. Make it fall first.
+							var tempOtherRootPoint = otherStone.rootPoint
+							fall(otherStone, delta)
+							if otherStone.rootPoint != tempOtherRootPoint:
+								#stone fell far enough that it's no longer in the cell below us.
+								#It isn't blocking us anymore.
+								doneLookingAtStonesForThisLiberty = true
+								break
+						#Don't overlap the stone below us.
+						highestFloor = min(highestFloor, otherStone.fallCounter)
+						if !otherStone.falling:
+							hardFloor = true
+						doneLookingAtStonesForThisLiberty = true
+						break
+				if doneLookingAtStonesForThisLiberty:
+					break
+	var crossedThreshold: bool
+	if highestFloor < stone.fallThreshold / 2.0 || !hardFloor:
+		crossedThreshold = stone.advance_fall(delta, highestFloor)
+	else:
+		crossedThreshold = stone.advance_fall(delta, -1.0)
+	if crossedThreshold:
+		stone.move(Vector2i(0,1))
+		stone.position = get_position_for(stone.rootPoint)
+	if !stone.falling:
+		return -1.0
+	else:
+		return stone.fallCounter
 
 func _physics_process(delta: float) -> void:
 	check_for_clears()
-	apply_gravity()
+	apply_gravity(delta)
 
 func _draw() -> void:
 	for col in range(width):

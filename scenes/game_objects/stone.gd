@@ -2,6 +2,7 @@ extends Node2D
 class_name Stone
 
 signal clear(stone: Stone)
+signal land(stone: Stone)
 
 var rootPoint: Vector2i
 #use these to index into shapes array: shapes[shape][orientation]
@@ -10,6 +11,8 @@ var orientation: int = 0
 var color: int #concat colors[color] and shapes[shape][orientation][&"spriteTexture"]
 var clearing: bool = false
 var falling: bool = false
+var fallThreshold: float = 0.2
+var fallCounter: float = fallThreshold / 2.0
 var clearTimer: Timer
 
 func _ready() -> void:
@@ -40,3 +43,19 @@ func spin(orientation: int, shapes: Array[Array], textures: Array[Array]) -> voi
 
 func move(offset: Vector2i) -> void:
 	rootPoint = rootPoint + offset
+
+func advance_fall(delta: float, cap: float) -> bool: #cap of less than 0 represents a solid floor
+	var tempFalling: bool = falling
+	falling = true
+	fallCounter = fallCounter + delta
+	if cap < 0.0 && fallCounter >= fallThreshold / 2.0:
+		fallCounter = fallThreshold / 2.0
+		falling = false
+		if tempFalling:
+			emit_signal("land", self)
+	elif cap >= 0.0 && fallCounter > cap:
+		fallCounter = cap
+	elif fallCounter > fallThreshold:
+		fallCounter = fallCounter - fallThreshold
+		return true # True indicates we crossed a cell boundary
+	return false #no boundary crossed
