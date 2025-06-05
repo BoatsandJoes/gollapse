@@ -40,7 +40,7 @@ const groups: Array[Array] = [
 var pieces: Array[Array] # array of array of dicts of color, shape, orientation, rootOffset
 
 func init(colors: int):
-	const piecesPerSingle: int = 11 #11 matches their "natural frequency"
+	const piecesPerSingle: int = 3 #11 matches their "natural frequency"
 	for i in range(1000):
 		var group: Array[Dictionary] = []
 		var choice = groups[randi_range(0, groups.size() - 1)]
