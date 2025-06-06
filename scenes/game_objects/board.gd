@@ -7,7 +7,7 @@ var cellPixels: int
 var stonesOnBoard: Array[Stone] = []
 var board: Array = []
 var flagForClearCheck: bool = false
-var priorityClearColors: Array[int] = [0,1]
+var priorityClearColors: Array[int] = [0,1,2]
 var shapes: Array[Array]
 var checkedStones: Array[Stone] = []
 
@@ -52,6 +52,7 @@ func get_position_for(point: Vector2i) -> Vector2:
 func check_for_clears() -> void:
 	if flagForClearCheck: #only check on frames with a placement or a landing (or a rollback?)
 		flagForClearCheck = false #don't check next frame unless this is set again.
+		var captures: Array[Array] = []
 		for i in range(priorityClearColors.size()):
 			#if black was placed most recently, clear white first and vice versa
 			var checkingColor: int = priorityClearColors[i]
@@ -60,8 +61,13 @@ func check_for_clears() -> void:
 				if !stone.clearing && stone.color == checkingColor && !checkedStones.has(stone):
 					var capturedGroup: Array[Stone] = return_surrounded_group_containing(stone)
 					if !capturedGroup.is_empty():
-						for capturedStone in capturedGroup:
-							capturedStone.begin_clear()
+						captures.append(capturedGroup)
+			if i >= priorityClearColors.size() - 2:
+				#Two two batches of clears: one for all colors but one, and a second for the last color.
+				for capturedGroup in captures:
+					for capturedStone in capturedGroup:
+						capturedStone.begin_clear()
+				captures = []
 
 func return_surrounded_group_containing(stone: Stone) -> Array[Stone]:
 	var clearing: Array[Stone] = []
