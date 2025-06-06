@@ -4,7 +4,7 @@ class_name GameManager
 var rando: Randomizer = Randomizer.new()
 var textures: Array[Array]
 var shapes: Array[Array]
-var numColors: int = 2
+var numColors: int = 3
 var cellPixels: int = 32
 var width: int = 9
 var height: int = 11

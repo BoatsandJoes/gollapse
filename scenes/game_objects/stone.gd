@@ -35,6 +35,10 @@ func init(color: int, shape: int, orientation: int, shapes: Array[Array], textur
 	self.color = color
 	self.shape = shape
 	spin(orientation, shapes, textures)
+	if color == 2:
+		$Sprite2D.set_modulate(Color(0.5, 0.5, 0.5, 1))
+	else:
+		$Sprite2D.set_modulate(Color(1, 1, 1, 1))
 
 func spin(orientation: int, shapes: Array[Array], textures: Array[Array]) -> void:
 	self.orientation = orientation
