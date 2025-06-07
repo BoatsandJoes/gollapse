@@ -9,6 +9,7 @@ var rootPoint: Vector2i
 var shape: int
 var orientation: int = 0
 var color: int #concat colors[color] and shapes[shape][orientation][&"spriteTexture"]
+var clearable: bool = true
 var clearing: bool = false
 var falling: bool = false
 var fallThreshold: float = 0.2

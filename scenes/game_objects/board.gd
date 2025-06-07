@@ -4,37 +4,41 @@ class_name Board
 var height: int
 var width: int
 var cellPixels: int
+var Stone = preload("res://scenes/game_objects/Stone.tscn")
 var stonesOnBoard: Array[Stone] = []
 var board: Array = []
 var flagForClearCheck: bool = false
 var priorityClearColors: Array[int] = [0,1,2]
 var shapes: Array[Array]
+var textures: Array[Array]
 var checkedStones: Array[Stone] = []
 
 func _ready() -> void:
 	pass
 
-func init(width, height, cellPixels, shapes):
+func init(width, height, cellPixels, shapes, textures):
 	self.width = width
 	self.height = height
 	self.cellPixels = cellPixels
 	self.shapes = shapes
+	self.textures = textures
 	board.resize(width * height)
 
-func place_all(stones: Array[Stone]):
+func place_all(stones: Array[Stone], updatePriority: bool = true):
 	for stone in stones:
-		place(stone)
+		place(stone, updatePriority)
 
-func place(stone: Stone):
+func place(stone: Stone, updatePriority: bool = true):
 	stonesOnBoard.append(stone)
 	stone.position = get_position_for(stone.rootPoint)
 	stone.clear.connect(_on_stone_clear)
 	stone.land.connect(_on_stone_land)
 	add_child(stone)
-	flagForClearCheck = true
-	# This stone's color will be cleared last (ie will capture before it is captured)
-	priorityClearColors.erase(stone.color)
-	priorityClearColors.append(stone.color)
+	if updatePriority:
+		flagForClearCheck = true
+		# This stone's color will be cleared last (ie will capture before it is captured)
+		priorityClearColors.erase(stone.color)
+		priorityClearColors.append(stone.color)
 
 func _on_stone_clear(stone: Stone):
 	stonesOnBoard.erase(stone)
@@ -58,7 +62,8 @@ func check_for_clears() -> void:
 			var checkingColor: int = priorityClearColors[i]
 			for stone in stonesOnBoard:
 				checkedStones = []
-				if !stone.clearing && stone.color == checkingColor && !checkedStones.has(stone):
+				if (stone.clearable && !stone.clearing && stone.color == checkingColor
+				&& !checkedStones.has(stone)):
 					var capturedGroup: Array[Stone] = return_surrounded_group_containing(stone)
 					if !capturedGroup.is_empty():
 						captures.append(capturedGroup)
@@ -174,6 +179,15 @@ func fall(stone: Stone, delta: float) -> float:
 		return -1.0
 	else:
 		return stone.fallCounter
+
+func push_floor(garbage: Array[Dictionary]): #array of dicts of color, shape, orientation, rootOffset
+	for piece in garbage:
+		var stone = Stone.instantiate()
+		stone.init(piece[&"color"], piece[&"shape"], piece[&"orientation"], shapes, textures)
+		stone.rootOffset = piece[&"rootOffset"] + Vector2i(0,height) #below bottom of board
+		stone.clearable = false
+		place(stone, false)
+	#todo garbage placed. Now initiate push
 
 func _physics_process(delta: float) -> void:
 	check_for_clears()
