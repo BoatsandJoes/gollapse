@@ -75,6 +75,7 @@ func init(colors: int, width: int):
 			# Add one shape at random (not to the edge). This is the simplest way to do it code-wise
 			row.append({&"color": randi_range(0, colors - 1), &"shape": randi_range(0,2),
 			&"orientation": 0, &"rootOffset": Vector2i(randi_range(1, width - 2),0)})
+		garbageRows.append(row)
 
 func get_piece(index: int) -> Array[Dictionary]:
 	return pieces[index % pieces.size()]
