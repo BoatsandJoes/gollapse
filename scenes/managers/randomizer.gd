@@ -9,41 +9,43 @@ const groups: Array[Array] = [
 	[[{&"shape": 2, &"orientation": 0, &"offset": Vector2i(0,0)}]],
 	# bent 3
 	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)}]],
-	#=
-	[[{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}]],
-	#T
-	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
-	[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}]],
-	#L
-	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(-1,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}],
-	[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 1, &"orientation": 1, &"offset": Vector2i(-1,0)}]],
-	#J
-	[[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(1,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
+	#2 2 L / J
+	[[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(0,0)},
+		{&"shape": 1, &"orientation": 1, &"offset": Vector2i(-1,0)}],
 	[{&"shape": 1, &"orientation": 0, &"offset": Vector2i(-1,0)},
 		{&"shape": 1, &"orientation": 1, &"offset": Vector2i(1,0)}]],
-	#S
-	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,1)}]],
-	#Z
-	[[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,1)}]],
-	#smashboy
-	[[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
-		{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,1)}]]
+	#Bent 3 + 1 all grouped together
+	[
+		#T
+		[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
+		[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(0,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}],
+		#L
+		[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(-1,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,0)}],
+		#J
+		[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(1,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,0)}],
+		#S
+		[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(-1,1)}],
+		#Z
+		[{&"shape": 3, &"orientation": 1, &"offset": Vector2i(0,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,1)}],
+		#smashboy
+		[{&"shape": 3, &"orientation": 0, &"offset": Vector2i(0,0)},
+			{&"shape": 0, &"orientation": 0, &"offset": Vector2i(1,1)}]
+	]
 ]
 var pieces: Array[Array] # array of array of dicts of color, shape, orientation, rootOffset
+var garbageRows: Array[Array] # array of array of dicts of color, shape, orientation, rootOffset
 
 func init(colors: int):
 	var piecesPerSingle: int = colors + 1 #ensures that we rotate through all colors
 	for i in range(1000):
 		var group: Array[Dictionary] = []
-		var choice = groups[randi_range(0, groups.size() - 1)]
+		var choice = groups[randi_range(0, groups.size() - 3)] #exclude the 2 meanest groups
 		choice = choice[randi_range(0, choice.size() - 1)]
 		if i != 0 && i % piecesPerSingle == 0:
 			# Deal a single.
@@ -52,6 +54,7 @@ func init(colors: int):
 			group.append({&"color": i % colors, &"shape": spec[&"shape"], &"orientation": spec[&"orientation"],
 		&"rootOffset": spec[&"offset"]})
 		pieces.append(group)
+	#todo garbage rows
 
 func get_piece(index: int) -> Array[Dictionary]:
-	return pieces[index]
+	return pieces[index % pieces.size()]
