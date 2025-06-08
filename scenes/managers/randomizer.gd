@@ -60,7 +60,7 @@ func init(colors: int, width: int):
 	for i in range(500):
 		var row: Array[Dictionary] = []
 		for col in range(width):
-			if randf() < 0.4:
+			if randf() < 0.3:
 				if (!row.is_empty() && row[row.size() - 1][&"rootOffset"] == Vector2i(col - 1, 0)
 				&& row[row.size() - 1][&"shape"] != 2):
 					#merge with previous

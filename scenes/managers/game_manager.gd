@@ -56,7 +56,7 @@ func _ready() -> void:
 	rainTimer.autostart = false
 	rainTimer.timeout.connect(_on_rainTimer_timeout)
 	add_child(rainTimer)
-	#rainTimer.start()
+	rainTimer.start()
 
 func _on_rainTimer_timeout():
 	for board in boards:
