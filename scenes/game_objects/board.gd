@@ -55,12 +55,6 @@ func get_position_for(point: Vector2i) -> Vector2:
 
 func check_for_clears() -> void:
 	if flagForClearCheck: #only check on frames with a placement or a landing (or a rollback?)
-		# for line check. Array of dictionaries (each dict is one line)
-		# where keys = stones and values = array of columns covered by that stone
-		var lines: Array = []
-		lines.resize(height)
-		for i in range(height):
-			lines[i] = {}
 		flagForClearCheck = false #don't check next frame unless this is set again.
 		var captures: Array[Array] = []
 		for i in range(priorityClearColors.size()):
@@ -70,22 +64,6 @@ func check_for_clears() -> void:
 				checkedStones = []
 				if (stone.clearable && !stone.clearing && stone.color == checkingColor
 				&& !checkedStones.has(stone)):
-					# catalog stone for line check later
-					for genericPoint in shapes[stone.shape][stone.orientation][&"occupies"]:
-						var point = genericPoint + stone.rootPoint
-						if lines[point.y] != null:
-							if lines[point.y].is_empty():
-								#This stone is the first one in this line.
-								lines[point.y][stone] = [point.x]
-							elif lines[point.y].has(stone):
-								#add to other points in same stone
-								lines[point.y][stone].append(point.x)
-							elif lines[point.y].keys()[0].color != stone.color:
-								#color mismatch. Cannot be a line.
-								lines[point.y] = null
-							else:
-								#add this stone to other stones of same color in line
-								lines[point.y][stone] = [point.x]
 					var capturedGroup: Array[Stone] = return_surrounded_group_containing(stone)
 					if !capturedGroup.is_empty():
 						captures.append(capturedGroup)
@@ -95,17 +73,6 @@ func check_for_clears() -> void:
 					for capturedStone in capturedGroup:
 						capturedStone.begin_clear()
 				captures = []
-		#Clear lines.
-		for i in range(lines.size()):
-			var line = lines[i]
-			if line != null && !line.is_empty():
-				var pointCount: int = 0
-				for array in line.values():
-					pointCount += array.size()
-				if pointCount >= width:
-					#We have a complete line. Clear it.
-					for stone in line.keys():
-						stone.begin_clear() #this can clear the same stone for 2 lines. For now it's fine
 
 func return_surrounded_group_containing(stone: Stone) -> Array[Stone]:
 	var clearing: Array[Stone] = []
