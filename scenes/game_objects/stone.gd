@@ -53,7 +53,11 @@ func advance_fall(delta: float, cap: float) -> bool: #cap of less than 0 represe
 	var tempFalling: bool = falling
 	falling = true
 	fallCounter = fallCounter + delta
-	if cap < 0.0 && fallCounter >= fallThreshold / 2.0:
+	if delta < 0.0 && fallCounter < 0.0:
+		#pushing garbage
+		fallCounter = fallCounter + fallThreshold
+		return true
+	elif cap < 0.0 && fallCounter >= fallThreshold / 2.0:
 		fallCounter = fallThreshold / 2.0
 		falling = false
 		if tempFalling:

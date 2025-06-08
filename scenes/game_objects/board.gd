@@ -136,13 +136,26 @@ func apply_gravity(delta: float) -> void:
 func fall(stone: Stone, delta: float) -> float:
 	#This method assumes that there is no C stone that can wrap around and be above + below at the same time.
 	checkedStones.append(stone)
-	var highestFloor: float = stone.fallThreshold * 2 #this is a lower bound
+	var highestFloor: float = stone.fallThreshold * 2 #this default is a lower bound
 	var hardFloor: bool = false
+	var garbage: bool = false
 	for genericPoint in shapes[stone.shape][stone.orientation][&"pointsBelow"]:
 		var point = genericPoint + stone.rootPoint
-		if point.y >= height:
-			hardFloor = true
-			highestFloor = min(highestFloor, stone.fallThreshold / 2.0)
+		if point.y > height:
+			#garbage below the board
+			hardFloor = false
+			garbage = true
+		if point.y == height:
+			if stone.fallCounter <= stone.fallThreshold / 2.0:
+				#not garbage, at least not anymore
+				hardFloor = true
+				highestFloor = min(highestFloor, stone.fallThreshold / 2.0)
+				stone.clearable = true
+				#todo check for rising garbage. We may need to pop up.
+			else:
+				#garbage in the lower half of the in-board cell
+				hardFloor = false
+				garbage = true
 		else:
 			# Check to see if there's a stone below
 			for otherStone in stonesOnBoard:
@@ -168,13 +181,20 @@ func fall(stone: Stone, delta: float) -> float:
 				if doneLookingAtStonesForThisLiberty:
 					break
 	var crossedThreshold: bool
-	if highestFloor < stone.fallThreshold / 2.0 || !hardFloor:
-		crossedThreshold = stone.advance_fall(delta, highestFloor)
+	if !garbage:
+		if highestFloor < stone.fallThreshold / 2.0 || !hardFloor:
+			crossedThreshold = stone.advance_fall(delta, highestFloor)
+		else:
+			crossedThreshold = stone.advance_fall(delta, -1.0)
+		if crossedThreshold:
+			stone.move(Vector2i(0,1))
+			stone.position = get_position_for(stone.rootPoint)
 	else:
-		crossedThreshold = stone.advance_fall(delta, -1.0)
-	if crossedThreshold:
-		stone.move(Vector2i(0,1))
-		stone.position = get_position_for(stone.rootPoint)
+		#push garbage
+		if stone.advance_fall(-delta, stone.fallThreshold):
+			stone.move(Vector2i(0, -1))
+			stone.position = get_position_for(stone.rootPoint)
+			#todo push anyone stacked on top of us up too
 	if !stone.falling:
 		return -1.0
 	else:
@@ -187,7 +207,6 @@ func push_floor(garbage: Array[Dictionary]): #array of dicts of color, shape, or
 		stone.rootOffset = piece[&"rootOffset"] + Vector2i(0,height) #below bottom of board
 		stone.clearable = false
 		place(stone, false)
-	#todo garbage placed. Now initiate push
 
 func _physics_process(delta: float) -> void:
 	check_for_clears()
