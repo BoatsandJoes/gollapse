@@ -22,6 +22,8 @@ var Stone = preload("res://scenes/game_objects/Stone.tscn")
 var numBoards: int = 1
 var numPlayers: int = 1
 var numHumanPlayers: int = 1
+var rainTimer: Timer = Timer.new()
+var rainIndex: int = 0
 
 func _ready() -> void:
 	rando.init(numColors, width)
@@ -49,6 +51,36 @@ func _ready() -> void:
 			if j == queues[i].queueSize:
 				populate_ghost_from_queue(queues[i], ghosts[i])
 			queues[i].advance_queue(rando.get_piece(queues[i].piecesLoaded), shapes, textures)
+	rainTimer.wait_time = 5.0
+	rainTimer.one_shot = false
+	rainTimer.autostart = false
+	rainTimer.timeout.connect(_on_rainTimer_timeout)
+	add_child(rainTimer)
+	#rainTimer.start()
+
+func _on_rainTimer_timeout():
+	for board in boards:
+		var stones: Array[Stone] = []
+		for piece in rando.garbageRows[rainIndex]:
+			var stone = Stone.instantiate()
+			stone.init(piece[&"color"], piece[&"shape"], piece[&"orientation"], shapes, textures)
+			stone.rootPoint = piece[&"rootOffset"] + Vector2i(0,0)
+			stones.append(stone)
+		if can_place(board.stonesOnBoard, stones):
+			board.place_all(stones, false)
+	rainIndex = rainIndex + 1
+
+func can_place(stonesOnBoard: Array[Stone], stones: Array[Stone]) -> bool:
+	for i in range(stones.size()):
+		var stone = stones[i]
+		if stone.visible:
+			for boardStone in stonesOnBoard:
+				for boardPoint in shapes[boardStone.shape][boardStone.orientation][&"occupies"]:
+					for myPoint in shapes[stone.shape][stone.orientation][&"occupies"]:
+						#offsetPoints are baked into the root point already
+						if boardPoint + boardStone.rootPoint == myPoint + stone.rootPoint:
+							return false
+	return true
 
 func populate_ghost_from_queue(queue: Queue, ghost: Ghost):
 	#array of dicts of color, shape, orientation, rootOffset
