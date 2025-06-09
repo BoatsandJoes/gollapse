@@ -181,6 +181,7 @@ func fall(stone: Stone, delta: float) -> float:
 				if doneLookingAtStonesForThisLiberty:
 					break
 	var crossedThreshold: bool
+	#todo it's possible that there is no piece below us now but there will be one later in the frame
 	if !garbage:
 		if highestFloor < stone.fallThreshold / 2.0 || !hardFloor:
 			crossedThreshold = stone.advance_fall(delta, highestFloor)
